@@ -3,7 +3,7 @@ Contributors: eatingrules
 Tags: leadgen,highlight,spotlight,opt-in,feature,featured,focus
 Tested up to: 6.2
 Stable tag: trunk
-License: GPLv2
+License: GPLv3
 
 Highlight a specific element as the user scrolls through a page. 
 
