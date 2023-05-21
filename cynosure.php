@@ -5,8 +5,8 @@
  * Version:			1.0
  * Author: 			NerdPress
  * Author URI: 		https://www.nerdpress.net/
- * License:         GPL v2 or later
- * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
+ * License:         GPL v3
+ * License URI:     https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 function cynosure_enqueue_scripts() {
