@@ -1,12 +1,12 @@
 <?php
 /**
- * Plugin Name: 	Cynosure
- * Description: 	Adds an animated highlight feature to an in-content <div> as it scrolls by, making it the center of attention.
- * Version:			1.0
- * Author: 			NerdPress
- * Author URI: 		https://www.nerdpress.net/
- * License:         GPL v3
- * License URI:     https://www.gnu.org/licenses/gpl-3.0.html
+ * Plugin Name:	Cynosure
+ * Description:	Adds an animated highlight feature to an in-content <div> as it scrolls by, making it the center of attention.
+ * Version:	1.0
+ * Author:	NerdPress
+ * Author URI:	https://www.nerdpress.net/
+ * License:	GPL v3
+ * License URI:	https://www.gnu.org/licenses/gpl-3.0.html
  */
 
 function cynosure_enqueue_scripts() {
