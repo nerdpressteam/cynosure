@@ -10,13 +10,6 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 
 		if ( targetDiv ) {
-			function debounce(method, delay) {
-				clearTimeout(method._tId);
-				method._tId= setTimeout(function(){
-					method();
-				}, delay);
-			}
-
 			function cynosure() {
 				let windowMid = window.scrollY + window.innerHeight / 2;
 				let rect = targetDiv.getBoundingClientRect();
@@ -40,7 +33,19 @@ document.addEventListener("DOMContentLoaded", function() {
 				}
 			}
 
-			window.addEventListener('scroll', debounce(cynosure, 100));
+			let ticking = false;
+
+			document.addEventListener("scroll", (event) => {
+				if (!ticking) {
+					window.requestAnimationFrame(() => {
+						cynosure();
+						ticking = false;
+					});
+
+					ticking = true;
+				}
+			});
+
 		} else {
 			console.log("[Cynosure] Target div", cynosureSettings.selector, "not found");
 		}
