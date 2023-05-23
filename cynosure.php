@@ -15,13 +15,13 @@ function cynosure_enqueue_scripts() {
 
     $cynosure_settings	= get_option( 'cynosure' );
 
-	$color				= esc_html( $cynosure_settings[color] );
-    list($r, $g, $b)	= sscanf($color, "#%02x%02x%02x");
+    $color           = esc_html( $cynosure_settings[color] );
+    list($r, $g, $b) = sscanf($color, "#%02x%02x%02x");
 
     $settings = array(
         'selector' => $cynosure_settings[selector],
-        'color' => "rgba($r, $g, $b, 0.7)",
-		'debug' => $cynosure_settings[debug_mode]
+        'color'    => "rgba($r, $g, $b, 0.7)",
+        'debug'    => $cynosure_settings[debug_mode]
     );
     wp_localize_script('cynosure_script', 'cynosureSettings', $settings);
 }
@@ -33,13 +33,13 @@ function cynosure_custom_css() {
     $cynosure_settings	= get_option( 'cynosure' );
     
     echo '<style>
-	'. esc_html( $cynosure_settings[selector] ) .' {
+	'. esc_attr( $cynosure_settings[selector] ) .' {
 		box-shadow: 0 0 0 0 '. esc_html( $cynosure_settings[color] ) .';	
 		transition: box-shadow 0.3s ease-in-out;
     }
 	
 	.cynosure-active {
-		box-shadow: 0 0 0 max(100vh, 100vw) '. esc_html( $cynosure_settings[color] ) .';			
+		box-shadow: 0 0 0 max(100vh, 100vw) '. esc_attr( $cynosure_settings[color] ) .';			
 		transition: box-shadow 0.3s ease-in-out;
 		position: relative !important;
 		z-index: 99999 !important;
@@ -54,11 +54,11 @@ function cynosure_settings_init() {
 		'cynosure',
 		'cynosure',
 		array(
-			'type'		=> 'object',
-			'default'	=> array( 
-				'selector' 		=> '.cynosure',
-				'color' 		=> 'rgba(15,20,91,0.7)',
-				'debug_mode' 	=> false
+			'type'    => 'object',
+			'default' => array( 
+				'selector'   => '.cynosure',
+				'color'      => 'rgba(15,20,91,0.7)',
+				'debug_mode' => false
 				),
 			)
  		);
@@ -111,7 +111,7 @@ add_action('admin_init', 'cynosure_settings_init');
 
 function cynosure_selector_field_callback() {
 	$cynosure_settings = get_option( 'cynosure' );			
-    echo "<input type='text' name='cynosure[selector]' value='" . $cynosure_settings[selector] . "'/>";
+    echo "<input type='text' name='cynosure[selector]' value='" . esc_attr( $cynosure_settings[selector] ) . "'/>";
 	echo "<p class='description'>Enter the <code>.class</code> or <code>#id</code>. We will then make the corresponding <code>&lt;div&gt;</code> the cynosure in your content.</p>";	
 }
 
@@ -119,7 +119,7 @@ function cynosure_selector_field_callback() {
 function cynosure_color_field_callback() {
 	$cynosure_settings = get_option( 'cynosure' );		
     #$color = get_option('cynosure_color', 'rgba(0, 0, 0, 0.7)');
-    echo "<input type='text' id='cynosure_color' name='cynosure[color]' value='" . $cynosure_settings[color] . "' class='color-picker' data-alpha-enabled='true' />";
+    echo "<input type='text' id='cynosure_color' name='cynosure[color]' value='" . esc_attr( $cynosure_settings[color] ) . "' class='color-picker' data-alpha-enabled='true' />";
     echo "<p class='description'>Choose the background color and opacity for the darkening effect.</p>";
 }
 
@@ -128,7 +128,7 @@ function cynosure_debug_mode_callback() {
     if ( $cynosure_settings[debug_mode] ) {
 		$debug_checked = " checked";
 	}
-    echo "<input type='checkbox' id='cynosure_debug_mode' name='cynosure[debug_mode]'" . $debug_checked . "/>";
+    echo "<input type='checkbox' id='cynosure_debug_mode' name='cynosure[debug_mode]'" . esc_attr( $debug_checked ) . "/>";
     echo "<p class='description'>This will output debugging info to the JavaScript console. Please leave unchecked unless troubleshooting.</p>";		
 }
 
@@ -151,7 +151,7 @@ function cynosure_options_page_html() {
     settings_errors( 'cynosure_messages' );
     ?>
     <div class="wrap">
-        <h1><?= esc_html( get_admin_page_title() ); ?></h1>
+        <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
         <form action="options.php" method="post">
             <?php
             settings_fields( 'cynosure' );
