@@ -9,19 +9,21 @@
  * License URI:	https://www.gnu.org/licenses/gpl-3.0.html
  */
 
+define( 'CYNOSURE_VERSION', '1.0.0' );
+
 function cynosure_enqueue_scripts() {
     wp_register_script('cynosure_script', plugins_url('/cynosure.js', __FILE__), array(), '1.0', true);
     wp_enqueue_script('cynosure_script');
 
     $cynosure_settings	= get_option( 'cynosure' );
 
-    $color           = esc_html( $cynosure_settings[color] );
+    $color           = esc_html( $cynosure_settings['color'] );
     list($r, $g, $b) = sscanf($color, "#%02x%02x%02x");
 
     $settings = array(
-        'selector' => $cynosure_settings[selector],
+        'selector' => $cynosure_settings['selector'],
         'color'    => "rgba($r, $g, $b, 0.7)",
-        'debug'    => $cynosure_settings[debug_mode]
+        'debug'    => ! empty( $cynosure_settings['debug_mode'] )
     );
     wp_localize_script('cynosure_script', 'cynosureSettings', $settings);
 }
@@ -29,43 +31,43 @@ function cynosure_enqueue_scripts() {
 add_action('wp_enqueue_scripts', 'cynosure_enqueue_scripts');
 
 function cynosure_custom_css() {
-	
+
     $cynosure_settings	= get_option( 'cynosure' );
-    
+
     echo '<style>
-	'. esc_attr( $cynosure_settings[selector] ) .' {
-		box-shadow: 0 0 0 0 '. esc_html( $cynosure_settings[color] ) .';	
+	'. esc_attr( $cynosure_settings['selector'] ) .' {
+		box-shadow: 0 0 0 0 '. esc_html( $cynosure_settings['color'] ) .';
 		transition: box-shadow 0.3s ease-in-out;
     }
-	
+
 	.cynosure-active {
-		box-shadow: 0 0 0 max(100vh, 100vw) '. esc_attr( $cynosure_settings[color] ) .';			
+		box-shadow: 0 0 0 max(100vh, 100vw) '. esc_attr( $cynosure_settings['color'] ) .';
 		transition: box-shadow 0.3s ease-in-out;
 		position: relative !important;
 		z-index: 99999 !important;
-	}		
+	}
 </style>';
 }
 
 add_action('wp_head', 'cynosure_custom_css');
 
 function cynosure_settings_init() {
- 	register_setting( 
+ 	register_setting(
 		'cynosure',
 		'cynosure',
 		array(
 			'type'    => 'object',
-			'default' => array( 
+			'default' => array(
 				'selector'   => '.cynosure',
 				'color'      => 'rgba(15,20,91,0.7)',
 				'debug_mode' => false
 				),
 			)
  		);
-	
+
 	add_option(
 		'cynosure',
-		array( 
+		array(
 				'selector' 		=> '.cynosure',
 				'color' 		=> 'rgba(15,20,91,0.7)',
 				'debug_mode' 	=> false
@@ -94,7 +96,7 @@ function cynosure_settings_init() {
         'cynosure',
         'cynosure_settings_section'
     );
-	
+
     add_settings_field(
         'cynosure_debug_mode',
         'Debug Mode',
@@ -105,31 +107,29 @@ function cynosure_settings_init() {
 }
 add_action('admin_init', 'cynosure_settings_init');
 
-#function cynosure_settings_section_callback() {
-    #echo 'Update the settings for the Cynosure plugin.';
-#}
+function cynosure_settings_section_callback() {}
 
 function cynosure_selector_field_callback() {
-	$cynosure_settings = get_option( 'cynosure' );			
-    echo "<input type='text' name='cynosure[selector]' value='" . esc_attr( $cynosure_settings[selector] ) . "'/>";
-	echo "<p class='description'>Enter the <code>.class</code> or <code>#id</code>. We will then make the corresponding <code>&lt;div&gt;</code> the cynosure in your content.</p>";	
+	$cynosure_settings = get_option( 'cynosure' );
+
+    echo "<input type='text' name='cynosure[selector]' value='" . esc_attr( $cynosure_settings['selector'] ) . "'/>";
+	echo "<p class='description'>Enter the <code>.class</code> or <code>#id</code>. We will then make the corresponding <code>&lt;div&gt;</code> the cynosure in your content.</p>";
 }
 
 
 function cynosure_color_field_callback() {
-	$cynosure_settings = get_option( 'cynosure' );		
+	$cynosure_settings = get_option( 'cynosure' );
     #$color = get_option('cynosure_color', 'rgba(0, 0, 0, 0.7)');
-    echo "<input type='text' id='cynosure_color' name='cynosure[color]' value='" . esc_attr( $cynosure_settings[color] ) . "' class='color-picker' data-alpha-enabled='true' />";
+    echo "<input type='text' id='cynosure_color' name='cynosure[color]' value='" . esc_attr( $cynosure_settings['color'] ) . "' class='color-picker' data-alpha-enabled='true' />";
     echo "<p class='description'>Choose the background color and opacity for the darkening effect.</p>";
 }
 
 function cynosure_debug_mode_callback() {
-	$cynosure_settings = get_option( 'cynosure' );	
-    if ( $cynosure_settings[debug_mode] ) {
-		$debug_checked = " checked";
-	}
+	$cynosure_settings = get_option( 'cynosure' );
+
+    $debug_checked = ! empty( $cynosure_settings['debug_mode'] ) ? " checked" : '';
     echo "<input type='checkbox' id='cynosure_debug_mode' name='cynosure[debug_mode]'" . esc_attr( $debug_checked ) . "/>";
-    echo "<p class='description'>This will output debugging info to the JavaScript console. Please leave unchecked unless troubleshooting.</p>";		
+    echo "<p class='description'>This will output debugging info to the JavaScript console. Please leave unchecked unless troubleshooting.</p>";
 }
 
 
@@ -172,7 +172,7 @@ function cynosure_admin_scripts( $hook ) {
 
     wp_enqueue_style('wp-color-picker');
 	// Color Picker Alpha: https://github.com/kallookoo/wp-color-picker-alpha
-	wp_register_script( 'wp-color-picker-alpha', plugins_url( '/wp-color-picker-alpha.min.js', __FILE__ ), array( 'wp-color-picker' ), $current_version, $in_footer );
+	wp_register_script( 'wp-color-picker-alpha', plugins_url( '/wp-color-picker-alpha.min.js', __FILE__ ), array( 'wp-color-picker' ), CYNOSURE_VERSION, false );
 	wp_add_inline_script(
 		'wp-color-picker-alpha',
 		'jQuery( function() { jQuery( ".color-picker" ).wpColorPicker(); } );'
