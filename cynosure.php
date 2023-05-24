@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:	Cynosure
- * Description:	Adds an animated highlight feature to an in-content <div> as it scrolls by, making it the center of attention.
+ * Description:	Adds an animated highlight feature to an &lt;div&gt; as it scrolls by, making it the center of attention.
  * Version:	1.0
  * Author:	NerdPress
  * Author URI:	https://www.nerdpress.net/
